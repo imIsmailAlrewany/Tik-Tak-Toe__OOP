@@ -1,0 +1,164 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --blue: #025091;
+  /* light blue is for hover on td elements */
+  --lightblue: #0460ab;
+}
+
+html {
+  font-size: calc(16 / 1.6);
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  height: 100vh;
+  display: grid;
+  justify-content: center;
+  align-content: center;
+}
+
+/* start game frame style */
+
+.game,
+.game tbody tr .row,
+.game tbody tr .column {
+  border: 1px solid #fff;
+  border-collapse: collapse;
+}
+
+.game tbody tr .column {
+  padding: 50px;
+  background-color: var(--blue);
+  cursor: pointer;
+}
+
+.game tbody tr .column:hover {
+  background-color: var(--lightblue);
+}
+
+/* end game frame style */
+
+/* start with x creation and animation */
+
+.x {
+  height: 75px;
+  width: 75px;
+  background-color: transparent;
+  position: relative;
+}
+
+.x .left-cross,
+.x .right-cross {
+  width: 10px;
+  height: 100%;
+  background-color: transparent;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  margin-left: -5.5px;
+}
+
+.x .left-cross {
+  transform: rotate(-45deg);
+}
+
+.x .right-cross {
+  transform: rotate(45deg);
+}
+
+.x .left-cross::before,
+.x .right-cross::before {
+  content: "";
+  width: 100%;
+  height: 100%;
+  border-radius: 5px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #025091;
+  animation: line 0.3s linear;
+}
+
+
+@keyframes line {
+  from {
+    height: 15%;
+  }
+
+  to {
+    height: 100%;
+  }
+}
+
+/* end with x creation and animation */
+
+/* start with o creation and animation */
+
+.o {
+  width: 75px;
+  height: 75px;
+}
+
+.o circle {
+  transform: translate(10px, 10px);
+  fill: transparent;
+  stroke-width: 10px;
+  stroke: #025091;
+  stroke-linecap: round;
+  stroke-dasharray: 200;
+  stroke-dashoffset: calc(200 - (200 * 100 / 100));
+  animation: circle 0.3s linear;
+}
+
+@keyframes circle {
+  0% {
+    stroke-dashoffset: calc(200 - (200 * 1 / 100));
+  }
+
+  10% {
+    stroke-dashoffset: calc(200 - (200 * 10 / 100));
+  }
+
+  20% {
+    stroke-dashoffset: calc(200 - (200 * 20 / 100));
+  }
+
+  30% {
+    stroke-dashoffset: calc(200 - (200 * 30 / 100));
+  }
+
+  40% {
+    stroke-dashoffset: calc(200 - (200 * 40 / 100));
+  }
+
+  50% {
+    stroke-dashoffset: calc(200 - (200 * 50 / 100));
+  }
+
+  60% {
+    stroke-dashoffset: calc(200 - (200 * 60 / 100));
+  }
+
+  70% {
+    stroke-dashoffset: calc(200 - (200 * 70 / 100));
+  }
+
+  80% {
+    stroke-dashoffset: calc(200 - (200 * 80 / 100));
+  }
+
+  90% {
+    stroke-dashoffset: calc(200 - (200 * 90 / 100));
+  }
+
+  100% {
+    stroke-dashoffset: calc(200 - (200 * 100 / 100));
+  }
+}
+
+/* end with o creation and animation */
