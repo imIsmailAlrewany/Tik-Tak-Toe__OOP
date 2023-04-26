@@ -102,7 +102,6 @@ class TikTakToe {
 class BotPlay extends TikTakToe {
   constructor() { }
 
-
 }
 
 // play game when click on any item
