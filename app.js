@@ -53,9 +53,8 @@ class TikTakToe {
   static botInputs = [];
 
   static gamer(id, element) {
-    if (id) {
-      this.gamerInputs.push(+id);
-    }
+    if (+id) this.gamerInputs.push(+id);
+    else return;
 
     element.innerHTML = xAndO.x;
     element.style.pointerEvents = 'none';
@@ -63,9 +62,8 @@ class TikTakToe {
   }
 
   static bot(id, element) {
-    if (id) {
-      this.botInputs.push(+id);
-    }
+    if (+id) this.botInputs.push(+id);
+    else return;
 
     element.innerHTML = xAndO.o;
     element.style.pointerEvents = 'none';
@@ -112,17 +110,79 @@ class TikTakToe {
 class BotPlay extends TikTakToe {
   static checkPossibilities() {
 
-    let randomNum = Math.floor(Math.random() * (this.win.length + 1));
+    // check if gamer is about to win to lock the chian
+    if (this.gamerInputs.length > 1) {
 
-    if (this.gamerInputs.length + this.botInputs.length < 9) {
-      if (this.gamerInputs.includes(randomNum + 1)) {
-        return this.checkPossibilities();
-      } else if (this.botInputs.includes(randomNum + 1)) {
-        return this.checkPossibilities();
-      } else {
-        return randomNum;
-      }
+      let aboutWin = 0;
+      let arr = [];
+      let winNum = null;
+      let abandoned = [...this.gamerInputs];
+
+      const missingCell = () => {
+        for (let i = 0; i < this.win.length; i++) {
+
+          aboutWin = 0;
+          arr = this.win[i];
+
+          this.abandoned.forEach(input => {
+            if (arr.includes(input)) aboutWin++;
+          });
+
+          if (aboutWin === 2) break;
+        }
+
+        if (aboutWin === 2) {
+          arr.forEach(num => {
+            if (!this.gamerInputs.includes(num)) winNum = num - 1;
+          });
+        }
+
+        if (this.botInputs.includes(winNum)) {
+          abandoned.push(winNum);
+          missingCell();
+        }
+      };
+
+      missingCell();
+      return winNum;
     }
+
+    // bot checks if it's about to win to complete the chian
+    // if (this.botInputs.length >= 2) {
+
+    //   let aboutWin = 0;
+    //   let arr = [];
+
+    //   for (let i = 0; i < this.win.length; i++) {
+    //     aboutWin = 0;
+
+    //     this.botInputs.forEach(input => {
+    //       arr = this.win[i];
+    //       if (this.win[i].includes(input)) aboutWin++;
+    //     });
+
+    //     if (aboutWin === 2) break;
+    //   }
+
+    //   if (aboutWin === 2) {
+    //     arr.forEach(num => {
+    //       if (!this.botInputs.includes(num)) return num - 1;
+    //     });
+    //   };
+    // }
+
+    // this will work if there's no danger from the gamer or the bot about to win
+    // let randomNum = Math.floor(Math.random() * (this.win.length + 1));
+
+    // if (this.gamerInputs.length + this.botInputs.length < 9) {
+    //   if (this.gamerInputs.includes(randomNum + 1)) {
+    //     return this.checkPossibilities();
+    //   } else if (this.botInputs.includes(randomNum + 1)) {
+    //     return this.checkPossibilities();
+    //   } else {
+    //     return randomNum;
+    //   }
+    // }
   }
 
   static printO() {
