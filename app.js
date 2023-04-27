@@ -100,8 +100,45 @@ class TikTakToe {
 
 // bot second move (play)
 class BotPlay extends TikTakToe {
-  constructor() { }
+  static oEle = xAndO.o;
 
+  static generateNum() {
+    return Math.floor(Math.random() * (this.win.length + 1));
+  }
+
+  static printO() {
+    // if (this.botInputs.length >= 2) {
+
+    //   try {
+    //     // this to check if the bot is about to win
+    //     let match = 0;
+
+    //     this.win.forEach(winGroup => {
+    //       match = 0;
+
+    //       this.botInputs.forEach(input => {
+    //         if (winGroup.includes(input)) match++;
+    //       });
+
+    //       if (match === 2) throw new Error(true);
+    //     });
+    //   } catch (out) {
+
+    //   }
+
+    // }
+
+    // if (this.gamerInputs.length >= 2) { }
+
+    // here the code that will execute if both of those conditions didn't work
+    const randomNum = this.generateNum();
+
+    for (let i = 0; i < this.gamerInputs.length; i++) {
+      if (randomNum === this.gamerInputs[i]) this.printO();
+      else return randomNum;
+    }
+
+  }
 }
 
 // play game when click on any item
@@ -109,12 +146,14 @@ tableItems.forEach(ele => {
   ele.addEventListener('click', () => {
 
     TikTakToe.gamer(ele.getAttribute('_id'));
-    console.log(TikTakToe.gamerInputs);
     ele.innerHTML = xAndO.x;
 
     const message = TikTakToe.winner();
     console.log(message);
 
+    const index = BotPlay.printO();
+    setTimeout(() => {
+      tableItems[index].innerHTML = xAndO.o;
+    }, 500);
   });
 });
-
