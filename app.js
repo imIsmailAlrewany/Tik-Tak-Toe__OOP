@@ -31,7 +31,7 @@ Object.defineProperties(xAndO, {
   }
 });
 
-// define the game main class
+
 class TikTakToe {
 
   // will check on this array if I got any group of them will win
@@ -52,92 +52,86 @@ class TikTakToe {
   // all bot inputs
   static botInputs = [];
 
-  static gamer(id) {
+  static gamer(id, element) {
     if (id) {
       this.gamerInputs.push(+id);
     }
+
+    element.innerHTML = xAndO.x;
+    element.style.pointerEvents = 'none';
+    return this.gamerWin();
   }
 
-  static bot(id) {
+  static bot(id, element) {
     if (id) {
       this.botInputs.push(+id);
     }
+
+    element.innerHTML = xAndO.o;
+    element.style.pointerEvents = 'none';
+    return this.botWin();
   }
 
-  // check if the gamer or bot has matches with win array
-  static winner() {
-    try {
-      let gamerMatchNum = 0;
-      let botMatchNum = 0;
+  // check if the gamer has matched win row
+  static gamerWin() {
+    let gamerMatchNum = 0;
 
-      this.win.forEach(winGroup => {
-        gamerMatchNum = 0;
-        botMatchNum = 0;
+    for (let i = 0; i < this.win.length; i++) {
+      gamerMatchNum = 0;
 
-        this.gamerInputs.forEach(input => {
-          if (winGroup.includes(input)) gamerMatchNum++;
-        });
-
-        this.botInputs.forEach(input => {
-          if (winGroup.includes(input)) botMatchNum++;
-        });
-
-        // I use throw because there's no way to break forEach method not like (Loop)
-        if (gamerMatchNum === 3) throw new Error(`Congratulations, You Won!!!`);
-        if (botMatchNum === 3) throw new Error(`Loser, Game Over!!!`);
-
+      this.gamerInputs.forEach(input => {
+        if (this.win[i].includes(input)) gamerMatchNum++;
       });
 
-      const encouragements = ['Good!!!', 'Wow!!!', 'Good Job!!!', 'Fine!!!'];
-      return encouragements[Math.floor(Math.random() * (encouragements.length - 1 + 1))];
+      if (gamerMatchNum === 3) return `Congratulations, You Won!!!`;
+    }
 
-    } catch (msg) {
-      return msg.message;
+    const encouragements = ['Good!!!', 'Wow!!!', 'Good Job!!!', 'Fine!!!'];
+    const random = Math.floor(Math.random() * (encouragements.length - 1 + 1));
+    return encouragements[random];
+  }
+
+  // check if the bot has matched win row
+  static botWin() {
+    let botMatchNum = 0;
+
+    for (let i = 0; i < this.win.length; i++) {
+      botMatchNum = 0;
+
+      this.botInputs.forEach(input => {
+        if (this.win[i].includes(input)) botMatchNum++;
+      });
+
+      if (botMatchNum === 3) return `Game Over!!!`;
     }
   }
 
 }
 
-// bot second move (play)
-class BotPlay extends TikTakToe {
-  static oEle = xAndO.o;
 
-  static generateNum() {
-    return Math.floor(Math.random() * (this.win.length + 1));
+class BotPlay extends TikTakToe {
+  static checkPossibilities() {
+
+    let randomNum = Math.floor(Math.random() * (this.win.length + 1));
+
+    if (this.gamerInputs.length + this.botInputs.length < 9) {
+      if (this.gamerInputs.includes(randomNum + 1)) {
+        return this.checkPossibilities();
+      } else if (this.botInputs.includes(randomNum + 1)) {
+        return this.checkPossibilities();
+      } else {
+        return randomNum;
+      }
+    }
   }
 
   static printO() {
-    // if (this.botInputs.length >= 2) {
 
-    //   try {
-    //     // this to check if the bot is about to win
-    //     let match = 0;
+    const index = this.checkPossibilities();
 
-    //     this.win.forEach(winGroup => {
-    //       match = 0;
-
-    //       this.botInputs.forEach(input => {
-    //         if (winGroup.includes(input)) match++;
-    //       });
-
-    //       if (match === 2) throw new Error(true);
-    //     });
-    //   } catch (out) {
-
-    //   }
-
-    // }
-
-    // if (this.gamerInputs.length >= 2) { }
-
-    // here the code that will execute if both of those conditions didn't work
-    const randomNum = this.generateNum();
-
-    for (let i = 0; i < this.gamerInputs.length; i++) {
-      if (randomNum === this.gamerInputs[i]) this.printO();
-      else return randomNum;
+    if (index) {
+      return this.bot(tableItems[index].getAttribute('_id'), tableItems[index]);
     }
-
   }
 }
 
@@ -145,15 +139,13 @@ class BotPlay extends TikTakToe {
 tableItems.forEach(ele => {
   ele.addEventListener('click', () => {
 
-    TikTakToe.gamer(ele.getAttribute('_id'));
-    ele.innerHTML = xAndO.x;
+    const gamerWin = TikTakToe.gamer(ele.getAttribute('_id'), ele);
+    if (gamerWin) console.log(gamerWin);
 
-    const message = TikTakToe.winner();
-    console.log(message);
-
-    const index = BotPlay.printO();
     setTimeout(() => {
-      tableItems[index].innerHTML = xAndO.o;
+      const botWin = BotPlay.printO();
+      if (botWin) console.log(botWin);
     }, 500);
+
   });
 });
